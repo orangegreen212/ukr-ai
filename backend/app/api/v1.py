@@ -171,7 +171,6 @@ def build_health_payload(config: AppConfig) -> HealthPayload:
         demo_ok=demo_ok,
         demo_articles=demo_count,
         demo_error=demo_error,
-        lm_studio_enabled=config.lm_studio_usable(),
         live_feed_configured=config.feed_url_primary.startswith("http"),
     )
 

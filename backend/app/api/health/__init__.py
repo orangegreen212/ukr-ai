@@ -19,7 +19,6 @@ class HealthPayload(BaseModel):
     demo_ok: bool = False
     demo_articles: int = 0
     demo_error: str | None = None
-    lm_studio_enabled: bool = False
     live_feed_configured: bool = False
 
 
