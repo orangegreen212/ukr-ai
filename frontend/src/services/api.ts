@@ -315,5 +315,6 @@ export function analyzeArticle(
 /**
  * POST /api/v1/multimodal/analyze is not available in the online edition.
  * Sentiment and NER analysis are performed separately via /analysis endpoint.
+ * The online edition only supports standalone sentiment + NER analysis.
  */
-export function analyzeMultimodalRecord = undefined as any;
+export const analyzeMultimodalRecord = undefined as any;
