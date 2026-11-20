@@ -7,7 +7,7 @@ import {
   RotateCw,
   FileText,
   Info,
-  Layers,
+  AlertCircle,
 } from 'lucide-react';
 import type {
   Article,
@@ -37,6 +37,18 @@ import {
   formatDateShort,
   servingModeState,
   sourceArticleCounts,
+  sourceStatuses,
+  isArticleAnalyzable,
+  articleFullText,
+  analysisStatus,
+  sentimentStatus,
+  sentimentLabel,
+  sentimentErrorReason,
+  sentimentModelId,
+  nerStatus,
+  nerErrorReason,
+  nerModelId,
+  analysisEntities,
 } from '@/lib/normalize';
 import type { ServingModeState } from '@/lib/normalize';
 import { useAsyncRequest } from '@/hooks/useAsyncRequest';
@@ -47,6 +59,9 @@ import { Spinner } from '@/components/Spinner';
 import { EmptyState } from '@/components/EmptyState';
 import { SentimentVisual } from '@/components/SentimentVisual';
 import { EntityTags } from '@/components/EntityTags';
+
+/** Article-count choices for the list (backend caps `limit` at 200). */
+const LIMITS = [20, 50, 100, 200] as const;
 
 // Retry control for failed live ingestion (stale / error views).
 function RetryArticlesButton({
@@ -508,32 +523,26 @@ function ArticleDetail({ articleId, fallbackArticle, onBack }: ArticleDetailProp
   const analysis = useAsyncRequest<AnalysisResponse>();
 
   useEffect(() => {
-    // Never show a stale combined result after switching articles.
+    // Never show a stale result after switching articles.
     analysis.reset();
     setLoadingDetail(true);
     setDetailError(null);
+    const controller = new AbortController();
+    getArticle(articleId, controller.signal)
+      .then((full) => {
+        setArticle(full);
+        setLoadingDetail(false);
+      })
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        setDetailError(
+          err instanceof Error ? err.message : 'Could not load the full article.',
+        );
+        setLoadingDetail(false);
+      });
+    return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [articleId]);
-
-  const validateCombinedFile = (file: File): string | null => {
-    return null; // image analysis omitted in online edition
-  };
-
-  const acceptCombinedFile = (file: File | null) => {
-    analysis.reset();
-    setCombinedFileError(null);
-    if (!file) {
-      setCombinedFile(null);
-      return;
-    }
-    const error = validateCombinedFile(file);
-    if (error) {
-      setCombinedFile(null);
-      setCombinedFileError(error);
-      return;
-    }
-    setCombinedFile(file);
-  };
 
   const runAnalysis = () => {
     analysis.run((signal) => analyzeArticle(articleId, signal));

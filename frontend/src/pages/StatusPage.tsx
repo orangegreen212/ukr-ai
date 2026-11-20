@@ -5,6 +5,8 @@ import {
   AlertTriangle,
   MinusCircle,
   Rss,
+  Activity,
+  Database,
 } from 'lucide-react';
 import type { HealthPayload } from '@/types/api';
 import { API_BASE_URL } from '@/config';
@@ -224,117 +226,6 @@ function IntegrationCard({
         </span>
       </div>
       {note ? <p className="text-[11px] text-slate-500 leading-relaxed">{note}</p> : null}
-    </div>
-  );
-}
-
-/** Batch sentiment card (owner task 2026-11-11): runs the batch sentiment
- * aggregation ONLY on button press, then renders CSS-bar counts for the
- * same article batch the News tab serves (`/articles`, limit ≤ 200).
- * Honest labeling is mandatory: machine estimates over fragments, model
- * unvalidated for Ukrainian, `evaluation_status` always unreviewed. */
-const BATCH_LIMIT_OPTIONS = [20, 50, 200] as const;
-
-function BatchSentimentCard() {
-  const [limit, setLimit] = useState<number>(50);
-  const [data, setData] = useState<SentimentDistributionResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const run = useCallback(async (selected: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const payload = await getSentimentDistribution({ limit: selected });
-      setData(payload);
-    } catch (err) {
-      setData(null);
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'The batch sentiment request failed on the backend.',
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const total = data ? data.articles_analyzed : 0;
-
-  return (
-    <div className="surface p-4 space-y-3">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-slate-200">
-          <BarChart3 size={15} className="text-slate-400" aria-hidden />
-          <span className="text-sm font-medium">Batch sentiment</span>
-        </div>
-        <StatusDot
-          status={loading ? 'connecting' : data?.status === 'failed' ? 'offline' : data ? 'online' : 'unknown'}
-          label={loading ? 'Running…' : data?.status ?? 'Not run'}
-        />
-      </div>
-
-      <p className="text-xs text-slate-400">
-        Runs the local sentiment model over the current article batch
-        (the same records the News tab lists) and counts
-        positive / neutral / negative predictions.
-      </p>
-
-      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-        <label className="flex items-center gap-1">
-          Batch size
-          <select
-            value={limit}
-            onChange={(e) => setLimit(Number(e.target.value))}
-            disabled={loading}
-            className="rounded bg-base-800 px-2 py-0.5 text-slate-300"
-          >
-            {BATCH_LIMIT_OPTIONS.map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          type="button"
-          onClick={() => run(limit)}
-          disabled={loading}
-          className="rounded bg-base-800 px-2 py-0.5 text-slate-200 hover:bg-base-700 disabled:opacity-50"
-        >
-          {loading ? 'Analyzing…' : 'Analyze batch'}
-        </button>
-      </div>
-
-      {data ? (
-        <div className="space-y-2" data-testid="batch-sentiment-bars">
-          <SentimentBar label="Positive" count={data.counts.positive} total={total} tone="bg-success" />
-          <SentimentBar label="Neutral" count={data.counts.neutral} total={total} tone="bg-slate-500" />
-          <SentimentBar label="Negative" count={data.counts.negative} total={total} tone="bg-danger" />
-          <p className="text-[11px] text-slate-500">
-            {data.status !== 'ok' ? `Status: ${data.status}. ` : ''}
-            {data.articles_analyzed} of {data.articles_available} eligible
-            articles analyzed ({data.articles_failed} failed)
-            {data.error_reason ? ` — ${data.error_reason}` : ''}.
-            Model: <code className="font-mono">{data.model_id || 'n/a'}</code>.
-            Evaluation status: {data.evaluation_status} — machine estimates,
-            not ground truth.
-          </p>
-          {data.caveat ? (
-            <p className="text-[11px] text-slate-500 leading-relaxed">{data.caveat}</p>
-          ) : null}
-        </div>
-      ) : null}
-
-      {error ? (
-        <Callout variant="error" title="Batch sentiment failed">
-          {error}
-        </Callout>
-      ) : null}
-
-      <p className="text-[11px] text-slate-500 leading-relaxed">
-        Estimation only: predictions come from an unvalidated pilot model run
-        on article fragments; they are never reviewed labels or proof of
-        actual tone.
-      </p>
     </div>
   );
 }
