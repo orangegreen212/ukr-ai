@@ -4,7 +4,7 @@
  */
 export const API_BASE_URL: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ??
-  'http://127.0.0.1:8000';
+  (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
 
 /** Per-request timeout guidance (milliseconds). */
 export const TIMEOUTS = {

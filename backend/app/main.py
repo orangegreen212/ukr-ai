@@ -24,7 +24,7 @@ def create_app() -> FastAPI:
 
     # Register the versioned API router (Phase 1 + Phase 2 analysis)
     v1_router = build_v1_router()
-    app.include_router(v1_router, prefix="/api/v1", tags=["v1"])
+    app.include_router(v1_router, tags=["v1"])
 
     return app
 

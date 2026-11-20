@@ -2,18 +2,16 @@
   "services": {
     "frontend": {
       "root": "frontend",
-      "framework": "vite",
-      "buildCommand": "npm run build",
-      "outputDirectory": "dist"
+      "framework": "vite"
     },
     "backend": {
       "root": "backend",
-      "framework": "fastapi"
+      "entrypoint": "app.main:app"
     }
   },
-  "routes": [
-    { "src": "/health", "dest": "/api/v1/health" },
-    { "src": "/api/(.*)", "dest": "/backend/$1" },
-    { "src": "/(.*)", "dest": "/frontend/$1" }
+  "rewrites": [
+    { "source": "/health", "destination": { "service": "backend" } },
+    { "source": "/api/:path*", "destination": { "service": "backend" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]
 }
