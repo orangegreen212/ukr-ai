@@ -4,8 +4,7 @@
       "root": "frontend",
       "framework": "vite",
       "buildCommand": "npm run build",
-      "outputDirectory": "dist",
-      "distinguishedHead": true
+      "outputDirectory": "dist"
     },
     "backend": {
       "src": "backend",
