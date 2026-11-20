@@ -151,7 +151,4 @@ def load_config(env: Mapping[str, str] | None = None) -> AppConfig:
         ingest_max_fetch_workers=max(
             1, _as_int(e.get("INGEST_MAX_FETCH_WORKERS"), _DEFAULT_INGEST_MAX_FETCH_WORKERS)
         ),
-        supabase_url="",
-        supabase_db_dsn="",
-        db_enabled=False,
     )
