@@ -693,7 +693,7 @@ function ArticleDetail({ articleId, fallbackArticle, onBack }: ArticleDetailProp
             </div>
             <Callout variant="info" title="Models warming up">
               The first analysis can take over a minute while local models load. The interface stays responsive — you can navigate away and come back.
-            </div>
+            </Callout>
           </div>
         ) : null}
 
