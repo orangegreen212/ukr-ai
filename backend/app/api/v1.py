@@ -151,7 +151,7 @@ class AppModePayload(BaseModel):
     mode: Literal["live", "demo"]
 
 
-_mode_lock = threading.Lock_
+_mode_lock = threading.Lock
 _selected_mode: Literal["live", "demo"] = MODE_LIVE  # app default: live RSS
 
 
