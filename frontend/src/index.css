@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-base-950 text-slate-200 font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-ukon-500/40 text-white;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ukon-500 ring-offset-2 ring-offset-base-950;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-base-700 rounded;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-base-600;
+  }
+}
+
+@layer components {
+  .surface {
+    @apply bg-base-900 border border-base-800 rounded-md;
+  }
+
+  .surface-raised {
+    @apply bg-base-850 border border-base-800 rounded-md shadow-elevated;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md
+      text-sm font-medium transition-colors duration-150 select-none
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-ukon-600 text-white hover:bg-ukon-500
+      focus-visible:bg-ukon-500;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-slate-300 hover:bg-base-800 hover:text-white;
+  }
+
+  .btn-outline {
+    @apply btn bg-base-800 text-slate-200 border border-base-700
+      hover:bg-base-750 hover:text-white;
+  }
+
+  .input {
+    @apply w-full bg-base-850 border border-base-700 rounded-md px-3 py-2 text-sm
+      text-slate-100 placeholder:text-slate-500
+      focus:border-ukon-500 focus:ring-0 focus:outline-none
+      transition-colors duration-150;
+  }
+
+  .label {
+    @apply text-xs font-medium uppercase tracking-wider text-slate-500;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full
+      text-xs font-medium border;
+  }
+
+  .divider {
+    @apply h-px w-full bg-base-800;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

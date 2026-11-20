@@ -1,0 +1,17 @@
+# M5+online-edition runtime deps — lean, CPU-only, OpenRouter-first.
+# Image analysis (DeepFace) is omitted from the online edition.
+# Sentiment + NER: default OpenRouter free models via OPENROUTER_API_KEY;
+# local adapters remain as optional fallback (import lazily).
+
+fastapi>=0.110,<1.0
+uvicorn>=0.30,<1.0
+python-multipart==0.0.32          # FastAPI multipart support (still needed for /analysis if uploads ever return)
+requests>=2.31                    # app/ingestion/rss_fetch.py
+pydantic>=2.0,<3.0                # data validation (model_validate etc.)
+httpx>=0.27                       # OpenRouter API client
+
+# Optional: local NLP adapters (sentiment + NER) remain importable but
+# are not activated unless OPENROUTER_API_KEY is unset and local weights
+# are independently authorized. Import is lazy (per-model) to keep import-time
+# dependency free.
+# When running with OPENROUTER_API_KEY set, these are never imported at startup.
