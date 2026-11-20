@@ -36,6 +36,7 @@ import {
   formatDate,
   formatDateShort,
   servingModeState,
+  sourceArticleCounts,
 } from '@/lib/normalize';
 import type { ServingModeState } from '@/lib/normalize';
 import { useAsyncRequest } from '@/hooks/useAsyncRequest';
