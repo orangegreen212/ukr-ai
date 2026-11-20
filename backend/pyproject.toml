@@ -2,5 +2,5 @@
 name = "ukr-ai-online-backend"
 version = "0.1.0"
 
-[tool.fastapi]
-app = "app.api.main:app"
+[tool.vercel]
+entrypoint = "app.main:app"
