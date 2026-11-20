@@ -7,7 +7,6 @@
       "outputDirectory": "dist"
     },
     "backend": {
-      "src": "backend",
       "framework": "fastapi",
       "port": 8000,
       "workflow": "build-and-start",
