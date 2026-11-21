@@ -61,16 +61,16 @@ DERIVED_FAILED = "failed"
 
 
 def build_sentiment_classifier() -> Any:
-    """Real adapter factory (lazy import: module import stays torch-free)."""
-    from app.nlp.sent_impl import LocalSentimentClassifier
+    """OpenRouter-backed adapter (raises if OPENROUTER_API_KEY is unset)."""
+    from app.nlp.openrouter_impl import OpenRouterAnalyzer
 
-    return LocalSentimentClassifier()  # default local snapshot dir; no network
+    return OpenRouterAnalyzer()
 
 
 def build_ner_detector() -> Any:
-    from app.nlp.ner_impl import LocalNERDetector
+    from app.nlp.openrouter_impl import OpenRouterAnalyzer
 
-    return LocalNERDetector()  # default local snapshot dir; no network
+    return OpenRouterAnalyzer()
 
 
 class _ModelState:
@@ -155,6 +155,12 @@ def _analysis_text(article: Any) -> str:
     return article.text if article.text else (article.summary or "")
 
 
+def _model_id() -> str:
+    from app.config import load_config
+
+    return load_config().openrouter_model
+
+
 # --- frozen-contract failure predictions (statuses/reasons only) --------------
 
 
@@ -166,12 +172,10 @@ def _sentiment_failure(
     reason: str,
     predicted_at: datetime,
 ) -> SentimentPrediction:
-    from app.nlp.sent_impl import SENTIMENT_MODEL_ID
-
     return SentimentPrediction(
         article_id=article_id,
         content_hash=content_hash,
-        model_id=SENTIMENT_MODEL_ID,
+        model_id=_model_id(),
         predicted_at=predicted_at,
         status=status,
         error_reason=reason,
@@ -186,12 +190,10 @@ def _ner_failure(
     reason: str,
     predicted_at: datetime,
 ) -> NerPrediction:
-    from app.nlp.ner_impl import NER_MODEL_ID
-
     return NerPrediction(
         article_id=article_id,
         content_hash=content_hash,
-        model_id=NER_MODEL_ID,
+        model_id=_model_id(),
         predicted_at=predicted_at,
         status=status,
         error_reason=reason,

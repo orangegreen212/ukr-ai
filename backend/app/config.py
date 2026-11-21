@@ -24,7 +24,7 @@ _DEFAULT_APP_VERSION = "0.2.0"
 _DEFAULT_BASE_URL = "http://localhost:8000"
 _DEFAULT_FEED_PRIMARY = "https://www.pravda.com.ua/rss/"
 _DEFAULT_FEED_SECONDARY = "https://www.pravda.com.ua/rss/view_news/"
-_DEFAULT_DEMO_PATH = "data/samples/demo_articles.json"
+_DEFAULT_DEMO_PATH = "app/data/demo_articles.json"
 
 # OpenRouter configuration
 _DEFAULT_OPENROUTER_API_KEY = ""
